@@ -15,14 +15,14 @@ function PHOTOMODE.Start()
     Cam.SetFov(PHOTOMODE.CameraName, gameplayCamFov)
     Cam.SetActive(PHOTOMODE.CameraName, true, false, 0)
     SetTimeScale(0.0)
-    
+
     PHOTOMODE.IsActive = true
     Citizen.CreateThread(function()
         while PHOTOMODE.IsActive do
             PHOTOMODE.BlockMouvementsControls()
             local pPed = PlayerPedId()
             Cam.HandleSmartDof(PHOTOMODE.CameraName, pPed, 1.0)
-    
+
             if IsControlJustPressed(0, 241) then
                 local scaleFactor = gameplayCamFov / 20.0
                 gameplayCamFov = math.max(gameplayCamFov - scaleFactor, 1.0)
@@ -32,24 +32,24 @@ function PHOTOMODE.Start()
                 gameplayCamFov = math.min(gameplayCamFov + scaleFactor, 120.0)
                 PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
             end
-    
+
             PHOTOMODE.FOV = Utils.CalculateNextScalablePosition(gameplayCamFov, PHOTOMODE.FOV, 0.1)
             Cam.SetFov(PHOTOMODE.CameraName, PHOTOMODE.FOV)
-    
+
             local mouseX = GetControlNormal(0, 1)
             local mouseY = GetControlNormal(0, 2)
-    
+
             local currentFov = GetCamFov(Cam.Cache[PHOTOMODE.CameraName])
-    
+
             local scaleFactor = currentFov / 40.0
-    
+
             local camPos = GetCamCoord(Cam.Cache[PHOTOMODE.CameraName])
             local camRot = GetCamRot(Cam.Cache[PHOTOMODE.CameraName], 2)
-            local forwardVector = RotationToDirection(camRot)
+            local forwardVector = PHOTOMODE.RotationToDirection(camRot)
             local upVector = vector3(0.0, 0.0, 1.0)
             -- Right vector calculation using cross-product to ensure correct horizontal movement
-            local rightVector = CrossProduct(forwardVector, upVector)
-    
+            local rightVector = PHOTOMODE.CrossProduct(forwardVector, upVector)
+
             if IsDisabledControlPressed(0, 32) then -- W key
                 camPos = camPos + forwardVector * 0.1
             end
@@ -68,14 +68,14 @@ function PHOTOMODE.Start()
             if IsDisabledControlPressed(0, 45) then -- E key
                 camPos = camPos + upVector * 0.1
             end
-    
+
             Cam.SetPosition(PHOTOMODE.CameraName, camPos)
-    
+
             if not IsDisabledControlPressed(0, 24) then
                 camRot = vector3(camRot.x - mouseY * 5.0 * scaleFactor, camRot.y, camRot.z - mouseX * 5.0 * scaleFactor)
                 Cam.SetRotation(PHOTOMODE.CameraName, camRot, 2)
             end
-    
+
             Wait(1)
         end
         SetTimeScale(1.0)
@@ -84,7 +84,7 @@ function PHOTOMODE.Start()
 end
 
 -- Function to calculate the cross product of two vectors
-function CrossProduct(v1, v2)
+function PHOTOMODE.CrossProduct(v1, v2)
     return vector3(
         v1.y * v2.z - v1.z * v2.y,
         v1.z * v2.x - v1.x * v2.z,
@@ -92,7 +92,7 @@ function CrossProduct(v1, v2)
     )
 end
 
-function RotationToDirection(rotation)
+function PHOTOMODE.RotationToDirection(rotation)
     local radZ = math.rad(rotation.z)
     local radX = math.rad(rotation.x)
     local num = math.abs(math.cos(radX))
