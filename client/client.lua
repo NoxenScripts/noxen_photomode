@@ -37,6 +37,7 @@ function PHOTOMODE.Start()
     -- Hide HUD and radar
     DisplayHud(false)
     DisplayRadar(false)
+    Config.EnteredPhotomode()
 
     PHOTOMODE.IsActive = true
     Citizen.CreateThread(function()
@@ -176,8 +177,6 @@ function PHOTOMODE.Start()
 
                     baseY = baseY + y + 0.01
                 end
-
-                print(actualX, baseY)
             end
 
             Wait(1)
@@ -188,6 +187,7 @@ function PHOTOMODE.Start()
         -- Show HUD and radar
         DisplayHud(true)
         DisplayRadar(true)
+        Config.ExitedPhotomode()
     end)
 end
 
