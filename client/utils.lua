@@ -14,3 +14,13 @@ function Utils.CalculateNextScalablePosition(targetPosition, actualPosition, spe
 
     return actualPosition + ((targetPosition - actualPosition) * (speed * 1))
 end
+
+local Times = {}
+function Utils.IsTimePassed(name, time)
+	if Times[name] == nil or GetGameTimer() - Times[name] > time then
+		Times[name] = GetGameTimer()
+		return true
+	else
+		return false, (GetGameTimer() - Times[name]) / time
+	end
+end
