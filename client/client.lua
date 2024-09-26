@@ -3,6 +3,11 @@ PHOTOMODE.IsActive = false
 PHOTOMODE.CameraName = "photoModeCam"
 PHOTOMODE.FOV = 0
 
+PHOTOMODE.Settings = {
+    UseSmartDof = true,
+    UseStopTime = true,
+}
+
 function PHOTOMODE.Start()
     local gameplayCamPos = GetFinalRenderedCamCoord()
     local gameplayCamRot = GetGameplayCamRot(2)
@@ -25,7 +30,15 @@ function PHOTOMODE.Start()
         while PHOTOMODE.IsActive do
             PHOTOMODE.BlockMouvementsControls()
             local pPed = PlayerPedId()
-            Cam.HandleSmartDof(PHOTOMODE.CameraName, pPed, 1.0)
+            if PHOTOMODE.Settings.UseSmartDof then
+                Cam.HandleSmartDof(PHOTOMODE.CameraName, pPed, 1.0)
+            end
+
+            if PHOTOMODE.Settings.UseStopTime then
+                SetTimeScale(0.0)
+            else
+                SetTimeScale(1.0)
+            end
 
             if IsControlJustPressed(0, 241) then
                 local scaleFactor = gameplayCamFov / 20.0
