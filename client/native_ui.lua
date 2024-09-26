@@ -1,3 +1,6 @@
+-- UI Module with lot of utils functions
+-- Not everything is used by this script
+
 UI = {}
 UI.cooldown = false
 UI.font = {}
