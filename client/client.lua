@@ -8,11 +8,15 @@ PHOTOMODE.Settings = {
     UseStopTime = true,
 }
 
+PHOTOMODE.Cache = {}
+
 function PHOTOMODE.Start()
     local gameplayCamPos = GetFinalRenderedCamCoord()
     local gameplayCamRot = GetGameplayCamRot(2)
     local gameplayCamFov = GetGameplayCamFov()
     PHOTOMODE.FOV = gameplayCamFov
+    PHOTOMODE.Cache = {}
+    PHOTOMODE.Cache.MenuAlpha = 0
 
     Cam.Create(PHOTOMODE.CameraName)
     Cam.SetPosition(PHOTOMODE.CameraName, gameplayCamPos)
@@ -28,6 +32,7 @@ function PHOTOMODE.Start()
     PHOTOMODE.IsActive = true
     Citizen.CreateThread(function()
         while PHOTOMODE.IsActive do
+            PHOTOMODE.Cache.Moved = false
             PHOTOMODE.BlockMouvementsControls()
             local pPed = PlayerPedId()
             if PHOTOMODE.Settings.UseSmartDof then
@@ -44,10 +49,12 @@ function PHOTOMODE.Start()
                 local scaleFactor = gameplayCamFov / 20.0
                 gameplayCamFov = math.max(gameplayCamFov - scaleFactor, 1.0)
                 PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                PHOTOMODE.Cache.Moved = true
             elseif IsControlJustPressed(0, 242) then
                 local scaleFactor = gameplayCamFov / 20.0
                 gameplayCamFov = math.min(gameplayCamFov + scaleFactor, 120.0)
                 PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                PHOTOMODE.Cache.Moved = true
             end
 
             PHOTOMODE.FOV = Utils.CalculateNextScalablePosition(gameplayCamFov, PHOTOMODE.FOV, 0.1)
@@ -69,21 +76,27 @@ function PHOTOMODE.Start()
 
             if IsDisabledControlPressed(0, 32) then -- W key
                 camPos = camPos + forwardVector * 0.1
+                PHOTOMODE.Cache.Moved = true
             end
             if IsDisabledControlPressed(0, 33) then -- S key
                 camPos = camPos - forwardVector * 0.1
+                PHOTOMODE.Cache.Moved = true
             end
             if IsDisabledControlPressed(0, 34) then -- A key
                 camPos = camPos - rightVector * 0.1
+                PHOTOMODE.Cache.Moved = true
             end
             if IsDisabledControlPressed(0, 35) then -- D key
                 camPos = camPos + rightVector * 0.1
+                PHOTOMODE.Cache.Moved = true
             end
             if IsDisabledControlPressed(0, 44) then -- Q key
                 camPos = camPos - upVector * 0.1
+                PHOTOMODE.Cache.Moved = true
             end
             if IsDisabledControlPressed(0, 45) then -- E key
                 camPos = camPos + upVector * 0.1
+                PHOTOMODE.Cache.Moved = true
             end
 
             Cam.SetPosition(PHOTOMODE.CameraName, camPos)
@@ -91,6 +104,16 @@ function PHOTOMODE.Start()
             if not IsDisabledControlPressed(0, 24) then
                 camRot = vector3(camRot.x - mouseY * 5.0 * scaleFactor, camRot.y, camRot.z - mouseX * 5.0 * scaleFactor)
                 Cam.SetRotation(PHOTOMODE.CameraName, camRot, 2)
+            end
+
+            if PHOTOMODE.Cache.Moved then
+                PHOTOMODE.Cache.MenuAlpha = math.min(PHOTOMODE.Cache.MenuAlpha + 10, 255)
+            else
+                PHOTOMODE.Cache.MenuAlpha = math.max(PHOTOMODE.Cache.MenuAlpha - 10, 0)
+            end
+
+            if PHOTOMODE.Cache.MenuAlpha > 0 then
+                UI.DrawTexts(0.5, 0.9, "THIS IS A BIG TEST", true, 0.45, {255, 255, 255, 255}, 6, false, false, true, false)
             end
 
             Wait(1)
