@@ -16,6 +16,10 @@ function PHOTOMODE.Start()
     Cam.SetActive(PHOTOMODE.CameraName, true, false, 0)
     SetTimeScale(0.0)
 
+    -- Hide HUD and radar
+    DisplayHud(false)
+    DisplayRadar(false)
+
     PHOTOMODE.IsActive = true
     Citizen.CreateThread(function()
         while PHOTOMODE.IsActive do
@@ -80,6 +84,10 @@ function PHOTOMODE.Start()
         end
         SetTimeScale(1.0)
         PHOTOMODE.IsActive = false
+
+        -- Show HUD and radar
+        DisplayHud(true)
+        DisplayRadar(true)
     end)
 end
 
