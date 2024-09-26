@@ -111,10 +111,10 @@ function UI.DrawSlider(screenX, screenY, width, height, backgroundColor, progres
     DrawRect(pos[1], pos[2], progressWidth, progressHeight, progressColor[1], progressColor[2], progressColor[3], progressColor[4])
 
     if settings.noHover == false then
-        if UI.isMouseOnButton({x = GetControlNormal(0, 239) , y = GetControlNormal(0, 240)}, {x = screenX, y = screenY}, width, height) then
+        if UI.isMouseOnButton({x = UI.GetControl(239) , y = UI.GetControl(240)}, {x = screenX, y = screenY}, width, height) then
             SetMouseCursorSprite(4)
-            if IsControlPressed(0, 24) then
-                local mouse = GetControlNormal(0, 239)
+            if IsControlPressed(0, 24) or IsDisabledControlPressed(0, 24) then
+                local mouse = UI.GetControl(239)
                 local size = ((mouse - screenX) * max) / width
                 newValue = size
 
