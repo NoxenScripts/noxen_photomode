@@ -38,7 +38,9 @@ function PHOTOMODE.Start()
     DisplayHud(false)
     DisplayRadar(false)
     Config.EnteredPhotomode()
-    TriggerServerEvent("photomode:SetPlayerInPhotomode")
+    if Config.ShowIconAbovePlayersInPhotomode then
+        TriggerServerEvent("photomode:SetPlayerInPhotomode")
+    end
 
     PHOTOMODE.IsActive = true
     Citizen.CreateThread(function()
@@ -184,7 +186,9 @@ function PHOTOMODE.Start()
         end
         SetTimeScale(1.0)
         PHOTOMODE.IsActive = false
-        TriggerServerEvent("photomode:RemovePlayerInPhotomode")
+        if Config.ShowIconAbovePlayersInPhotomode then
+            TriggerServerEvent("photomode:RemovePlayerInPhotomode")
+        end
 
         -- Show HUD and radar
         DisplayHud(true)
@@ -240,53 +244,55 @@ RegisterCommand("photomode", function()
     end
 end, false)
 
-local PlayersPedInPhotomode = {}
--- Player filtering thread
-Citizen.CreateThread(function()
-    while true do
-        for k,v in pairs(GetActivePlayers()) do
-            local sID = GetPlayerServerId(v)
-            if PHOTOMODE.PlayersInPhotomode[sID] then
-                local pPed = GetPlayerPed(v)
-                if not PlayersPedInPhotomode[sID] then
-                    PlayersPedInPhotomode[sID] = pPed
+if Config.ShowIconAbovePlayersInPhotomode then
+    local PlayersPedInPhotomode = {}
+    -- Player filtering thread
+    Citizen.CreateThread(function()
+        while true do
+            for k,v in pairs(GetActivePlayers()) do
+                local sID = GetPlayerServerId(v)
+                if PHOTOMODE.PlayersInPhotomode[sID] then
+                    local pPed = GetPlayerPed(v)
+                    if not PlayersPedInPhotomode[sID] then
+                        PlayersPedInPhotomode[sID] = pPed
+                    end
+                else
+                    if PlayersPedInPhotomode[sID] then
+                        PlayersPedInPhotomode[sID] = nil
+                    end
                 end
+            end
+
+            Wait(3000)
+        end
+    end)
+
+    -- Main thread for icon display
+    Citizen.CreateThread(function()
+        local x, y = UI.ConvertToPixel(30, 30)
+        while true do
+            local HandlingUI = false
+            local pCoords = GetEntityCoords(PlayerPedId())
+
+            for k,v in pairs(PlayersPedInPhotomode) do
+                local entityCoords = GetEntityCoords(v)
+                local distance = #(pCoords - entityCoords)
+                if distance <= 15 then
+                    HandlingUI = true
+
+                    UI.DrawSimpleSprite("photomode_ui", "camera_icon", 0.5, 0.5, x, y, 0, 255, 255, 255, 255, {Draw3d = {pos = vector3(entityCoords.x, entityCoords.y, entityCoords.z + 1.0)}})
+                    print("Drawing icon", entityCoords, x, y)
+                end
+            end
+
+            if HandlingUI then
+                Wait(1)
             else
-                if PlayersPedInPhotomode[sID] then
-                    PlayersPedInPhotomode[sID] = nil
-                end
+                Wait(500)
             end
         end
-
-        Wait(3000)
-    end
-end)
-
--- Main thread for icon display
-Citizen.CreateThread(function()
-    local x, y = UI.ConvertToPixel(30, 30)
-    while true do
-        local HandlingUI = false
-        local pCoords = GetEntityCoords(PlayerPedId())
-
-        for k,v in pairs(PlayersPedInPhotomode) do
-            local entityCoords = GetEntityCoords(v)
-            local distance = #(pCoords - entityCoords)
-            if distance <= 15 then
-                HandlingUI = true
-
-                UI.DrawSimpleSprite("photomode_ui", "camera_icon", 0.5, 0.5, x, y, 0, 255, 255, 255, 255, {Draw3d = {pos = vector3(entityCoords.x, entityCoords.y, entityCoords.z + 1.0)}})
-                print("Drawing icon", entityCoords, x, y)
-            end
-        end
-
-        if HandlingUI then
-            Wait(1)
-        else
-            Wait(500)
-        end
-    end
-end)
+    end)
+end
 
 RegisterNetEvent("photomode:SetPlayerInPhotomode", function(serverID)
     PHOTOMODE.PlayersInPhotomode[serverID] = true
