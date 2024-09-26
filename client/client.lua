@@ -9,6 +9,7 @@ PHOTOMODE.Settings = {
 }
 
 PHOTOMODE.Cache = {}
+PHOTOMODE.PlayersInPhotomode = {} -- Populate with server IDs
 
 function PHOTOMODE.Start()
     local gameplayCamPos = GetFinalRenderedCamCoord()
@@ -16,6 +17,7 @@ function PHOTOMODE.Start()
     local gameplayCamFov = GetGameplayCamFov()
     PHOTOMODE.FOV = gameplayCamFov
     PHOTOMODE.Cache = {}
+    PHOTOMODE.Cache.LastRot = gameplayCamRot
     PHOTOMODE.Cache.MenuAlpha = 0
 
     Cam.Create(PHOTOMODE.CameraName)
@@ -104,16 +106,21 @@ function PHOTOMODE.Start()
             if not IsDisabledControlPressed(0, 24) then
                 camRot = vector3(camRot.x - mouseY * 5.0 * scaleFactor, camRot.y, camRot.z - mouseX * 5.0 * scaleFactor)
                 Cam.SetRotation(PHOTOMODE.CameraName, camRot, 2)
+
+                if PHOTOMODE.Cache.LastRot ~= camRot then
+                    PHOTOMODE.Cache.Moved = true
+                    PHOTOMODE.Cache.LastRot = camRot
+                end
             end
 
             if PHOTOMODE.Cache.Moved then
-                PHOTOMODE.Cache.MenuAlpha = math.min(PHOTOMODE.Cache.MenuAlpha + 10, 255)
+                PHOTOMODE.Cache.MenuAlpha = math.min(PHOTOMODE.Cache.MenuAlpha + 5, 255)
             else
-                PHOTOMODE.Cache.MenuAlpha = math.max(PHOTOMODE.Cache.MenuAlpha - 10, 0)
+                PHOTOMODE.Cache.MenuAlpha = math.max(PHOTOMODE.Cache.MenuAlpha - 5, 0)
             end
 
             if PHOTOMODE.Cache.MenuAlpha > 0 then
-                UI.DrawTexts(0.5, 0.9, "THIS IS A BIG TEST", true, 0.45, {255, 255, 255, 255}, 6, false, false, true, false)
+                UI.DrawTexts(0.5, 0.9, "THIS IS A BIG TEST", true, 0.45, {255, 255, 255, PHOTOMODE.Cache.MenuAlpha}, 6, false, false, true, false)
             end
 
             Wait(1)
