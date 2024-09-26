@@ -40,6 +40,6 @@ RegisterNetEvent('photomode:checkPermission', function()
     if hasPermission then
         TriggerClientEvent('photomode:toggleMode', source)
     else
-        API.SendNotification(source, Config.NoPermissionMessage)
+        Config.SendNotification(source, Config.NoPermissionMessage)
     end
 end)
