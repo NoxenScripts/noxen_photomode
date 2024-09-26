@@ -4,8 +4,8 @@ PHOTOMODE.CameraName = "photoModeCam"
 PHOTOMODE.FOV = 0
 
 PHOTOMODE.Settings = {
-    UseSmartDof = true,
-    UseStopTime = true,
+    UseSmartDof = {value = true, label = "Use depth of field"},
+    UseStopTime = {value = true, label = "Slow down game time"},
 }
 
 PHOTOMODE.Cache = {}
@@ -19,6 +19,7 @@ function PHOTOMODE.Start()
     PHOTOMODE.Cache = {}
     PHOTOMODE.Cache.LastRot = gameplayCamRot
     PHOTOMODE.Cache.MenuAlpha = 0
+    PHOTOMODE.Cache.IsUIActive = false
 
     Cam.Create(PHOTOMODE.CameraName)
     Cam.SetPosition(PHOTOMODE.CameraName, gameplayCamPos)
@@ -37,11 +38,11 @@ function PHOTOMODE.Start()
             PHOTOMODE.Cache.Moved = false
             PHOTOMODE.BlockMouvementsControls()
             local pPed = PlayerPedId()
-            if PHOTOMODE.Settings.UseSmartDof then
+            if PHOTOMODE.Settings.UseSmartDof.value then
                 Cam.HandleSmartDof(PHOTOMODE.CameraName, pPed, 1.0)
             end
 
-            if PHOTOMODE.Settings.UseStopTime then
+            if PHOTOMODE.Settings.UseStopTime.value then
                 SetTimeScale(0.0)
             else
                 SetTimeScale(1.0)
@@ -120,7 +121,40 @@ function PHOTOMODE.Start()
             end
 
             if PHOTOMODE.Cache.MenuAlpha > 0 then
-                UI.DrawTexts(0.5, 0.9, "THIS IS A BIG TEST", true, 0.45, {255, 255, 255, PHOTOMODE.Cache.MenuAlpha}, 6, false, false, true, false)
+                UI.DrawTexts(0.5, 0.9, "Press [E] to open the camera UI", true, 0.45, {255, 255, 255, PHOTOMODE.Cache.MenuAlpha}, 6, false, false, true, false)
+            end
+
+            if IsControlJustReleased(0, 38) then
+                PHOTOMODE.Cache.IsUIActive = not PHOTOMODE.Cache.IsUIActive
+            end
+
+            if PHOTOMODE.Cache.IsUIActive then
+                UI.ShowMouseThisFrame(true)
+
+                local baseX = 0.05
+                local baseY = 0.2
+
+                local x, y = UI.ConvertToPixel(292, 440)
+                UI.DrawSimpleSprite("photomode_ui", "frame", baseX, baseY, x, y, 0, 255, 255, 255, 255, {})
+
+                local x, y = UI.ConvertToPixel(15, 15)
+
+                baseY = baseY + 0.10
+                baseX = baseX + 0.01
+                for k,v in pairs(PHOTOMODE.Settings) do
+                    if type(v.value) == "boolean" then
+                        local sprite = "checkbox" .. (v.value and "_checked" or "")
+                        UI.DrawSpriteNew("photomode_ui", sprite, baseX, baseY, x, y, 0, 255, 255, 255, 255, {}, function(isSelected)
+                            if isSelected then
+                                PHOTOMODE.Settings[k].value = not PHOTOMODE.Settings[k].value
+                            end
+                        end)
+                    end
+
+                    UI.DrawTexts(baseX + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, 255}, 6, false, false, true, false)
+
+                    baseY = baseY + y + 0.01
+                end
             end
 
             Wait(1)
