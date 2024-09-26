@@ -4,8 +4,10 @@ PHOTOMODE.CameraName = "photoModeCam"
 PHOTOMODE.FOV = 0
 
 PHOTOMODE.Settings = {
-    UseSmartDof = {value = true, label = "Use depth of field"},
     UseStopTime = {value = true, label = "Slow down game time"},
+    UseSmartDof = {value = true, label = "Use depth of field"},
+    NearDofValue = {value = 1.0, label = "Near DOF value", minValue = 0.0, maxValue = 10.0},
+    FarDofValue = {value = 1.0, label = "Far DOF value", minValue = 0.0, maxValue = 10.0},
 }
 
 PHOTOMODE.Cache = {}
@@ -142,16 +144,25 @@ function PHOTOMODE.Start()
                 baseY = baseY + 0.10
                 baseX = baseX + 0.01
                 for k,v in pairs(PHOTOMODE.Settings) do
-                    if type(v.value) == "boolean" then
+                    local type = type(v.value)
+                    if type == "boolean" then
                         local sprite = "checkbox" .. (v.value and "_checked" or "")
                         UI.DrawSpriteNew("photomode_ui", sprite, baseX, baseY, x, y, 0, 255, 255, 255, 255, {}, function(isSelected)
                             if isSelected then
                                 PHOTOMODE.Settings[k].value = not PHOTOMODE.Settings[k].value
                             end
                         end)
+                        UI.DrawTexts(baseX + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, 255}, 6, false, false, true, false)
+                    elseif type == "number" then
+                        UI.DrawSlider(baseX, baseY, x + 0.05, y, {150, 150, 150, 200}, {250, 230, 10, 150}, v.value, v.maxValue, {direction = 1, noHover = false}, function(valueUpdated, newValue)
+                            if valueUpdated then
+                                PHOTOMODE.Settings[k].value = newValue
+                            end
+                        end)
+                        UI.DrawTexts(baseX + 0.05 + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, 255}, 6, false, false, true, false)
                     end
 
-                    UI.DrawTexts(baseX + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, 255}, 6, false, false, true, false)
+                    
 
                     baseY = baseY + y + 0.01
                 end
