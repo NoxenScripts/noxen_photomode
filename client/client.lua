@@ -6,8 +6,8 @@ PHOTOMODE.FOV = 0
 PHOTOMODE.Settings = {
     UseStopTime = {value = true, label = "Slow down game time"},
     UseSmartDof = {value = true, label = "Use depth of field"},
-    NearDofValue = {value = 1.0, label = "Near DOF value", minValue = 0.0, maxValue = 10.0},
-    FarDofValue = {value = 1.0, label = "Far DOF value", minValue = 0.0, maxValue = 10.0},
+    NearDofValue = {value = 1.0, label = "Near DOF value", minValue = 0.0, maxValue = 30.0},
+    FarDofValue = {value = 1.0, label = "Far DOF value", minValue = 0.0, maxValue = 30.0},
 }
 
 PHOTOMODE.Cache = {}
@@ -20,6 +20,7 @@ function PHOTOMODE.Start()
     PHOTOMODE.FOV = gameplayCamFov
     PHOTOMODE.Cache = {}
     PHOTOMODE.Cache.LastRot = gameplayCamRot
+    PHOTOMODE.Cache.UIAlpha = 0
     PHOTOMODE.Cache.MenuAlpha = 0
     PHOTOMODE.Cache.IsUIActive = false
 
@@ -130,14 +131,20 @@ function PHOTOMODE.Start()
                 PHOTOMODE.Cache.IsUIActive = not PHOTOMODE.Cache.IsUIActive
             end
 
-            if PHOTOMODE.Cache.IsUIActive then
+            if PHOTOMODE.Cache.IsUIActive or PHOTOMODE.Cache.UIAlpha > 0 then
+                if PHOTOMODE.Cache.IsUIActive then
+                    PHOTOMODE.Cache.UIAlpha = math.min(PHOTOMODE.Cache.UIAlpha + 10, 255)
+                else
+                    PHOTOMODE.Cache.UIAlpha = math.max(PHOTOMODE.Cache.UIAlpha - 10, 0)
+                end
+
                 UI.ShowMouseThisFrame(true)
 
                 local baseX = 0.05
                 local baseY = 0.2
 
                 local x, y = UI.ConvertToPixel(292, 440)
-                UI.DrawSimpleSprite("photomode_ui", "frame", baseX, baseY, x, y, 0, 255, 255, 255, 255, {})
+                UI.DrawSimpleSprite("photomode_ui", "frame", baseX, baseY, x, y, 0, 255, 255, 255, PHOTOMODE.Cache.UIAlpha , {})
 
                 local x, y = UI.ConvertToPixel(15, 15)
 
@@ -147,22 +154,20 @@ function PHOTOMODE.Start()
                     local type = type(v.value)
                     if type == "boolean" then
                         local sprite = "checkbox" .. (v.value and "_checked" or "")
-                        UI.DrawSpriteNew("photomode_ui", sprite, baseX, baseY, x, y, 0, 255, 255, 255, 255, {}, function(isSelected)
+                        UI.DrawSpriteNew("photomode_ui", sprite, baseX, baseY, x, y, 0, 255, 255, 255, PHOTOMODE.Cache.UIAlpha , {}, function(isSelected)
                             if isSelected then
                                 PHOTOMODE.Settings[k].value = not PHOTOMODE.Settings[k].value
                             end
                         end)
-                        UI.DrawTexts(baseX + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, 255}, 6, false, false, true, false)
+                        UI.DrawTexts(baseX + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, PHOTOMODE.Cache.UIAlpha }, 6, false, false, true, false)
                     elseif type == "number" then
-                        UI.DrawSlider(baseX, baseY, x + 0.05, y, {150, 150, 150, 200}, {250, 230, 10, 150}, v.value, v.maxValue, {direction = 1, noHover = false}, function(valueUpdated, newValue)
+                        UI.DrawSlider(baseX, baseY, x + 0.05, y, {150, 150, 150, PHOTOMODE.Cache.UIAlpha - 200}, {250, 230, 10, PHOTOMODE.Cache.UIAlpha - 150}, v.value, v.maxValue, {direction = 1, noHover = false}, function(valueUpdated, newValue)
                             if valueUpdated then
                                 PHOTOMODE.Settings[k].value = newValue
                             end
                         end)
-                        UI.DrawTexts(baseX + 0.05 + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, 255}, 6, false, false, true, false)
+                        UI.DrawTexts(baseX + 0.05 + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, PHOTOMODE.Cache.UIAlpha }, 6, false, false, true, false)
                     end
-
-                    
 
                     baseY = baseY + y + 0.01
                 end
