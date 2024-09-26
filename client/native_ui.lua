@@ -808,7 +808,7 @@ function UI.CalculateNextScalablePosition(targetPosition, actualPosition, speed)
         end
     end
 
-    return actualPosition + ((targetPosition - actualPosition) * (speed * Utils.TimeFrame))
+    return actualPosition + ((targetPosition - actualPosition) * (speed * 1))
 end
 
 function UI.CalculateLinearScalablePosition(targetPosition, actualPosition, speed)
