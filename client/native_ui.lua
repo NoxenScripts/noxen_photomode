@@ -259,6 +259,49 @@ function UI.DrawSpriteNew(textureDict, textureName, screenX, screenY, width, hei
     cb(onSelected, onHovered, pos)
 end
 
+function UI.DrawSimpleSprite(textureDict, textureName, screenX, screenY, width, height, heading, red, green, blue, alpha, settings)
+    local pos
+    if alpha <= 0 and not settings.drawEvenIfAlpha0 ~= nil and settings.drawEvenIfAlpha0 == false then
+        return
+    else
+        alpha = math.floor(alpha)
+    end
+
+    if not HasStreamedTextureDictLoaded(textureDict) then
+        RequestStreamedTextureDict(textureDict, true)
+    else
+        if settings.devmod ~= nil and settings.devmod == true then
+            local x = GetControlNormal(0, 239)
+            local y = GetControlNormal(0, 240)
+
+            print(x, y)
+
+            screenX = x
+            screenY = y
+
+            if IsControlJustReleased(0, 38) then
+                TriggerEvent("addToCopy", x..", "..y)
+            end
+        end
+
+        if settings.centerDraw ~= nil and settings.centerDraw == true then
+            pos = vector2(screenX, screenY)
+        else
+            pos = (vector2(screenX, screenY) + vector2(width, height) / 2.0)
+        end
+
+        if settings.Draw3d ~= nil then
+            SetDrawOrigin(settings.Draw3d.pos.x, settings.Draw3d.pos.y, settings.Draw3d.pos.z, 0)
+            pos = (vector2(0.0, 0.0) + vector2(width, height) / 2.0)
+        end
+
+        DrawSprite(textureDict, textureName, pos[1], pos[2], width, height, heading, red, green, blue, alpha)
+
+        if settings.Draw3d ~= nil then
+            ClearDrawOrigin()
+        end
+    end
+end
 
 function UI.DrawRect(screenX, screenY, width, height, heading, red, green, blue, alpha, settings, cb)
     local onSelected = false
