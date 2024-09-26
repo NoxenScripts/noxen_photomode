@@ -25,7 +25,7 @@ function PHOTOMODE.Start()
         while PHOTOMODE.IsActive do
             local pPed = PlayerPedId()
             Cam.HandleSmartDof(PHOTOMODE.CameraName, pPed, 1.0)
-    
+
             -- Check for mouse scroll input to adjust FOV
             if IsControlJustPressed(0, 241) then -- Scroll up
                 local scaleFactor = gameplayCamFov / 20.0 -- Adjust the divisor to control sensitivity
@@ -36,25 +36,25 @@ function PHOTOMODE.Start()
                 gameplayCamFov = math.min(gameplayCamFov + scaleFactor, 120.0) -- Increase FOV, maximum 120.0
                 PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true) -- Play sound
             end
-    
+
             PHOTOMODE.FOV = Utils.CalculateNextScalablePosition(gameplayCamFov, PHOTOMODE.FOV, 0.1)
             Cam.SetFov(PHOTOMODE.CameraName, PHOTOMODE.FOV)
-    
+
             -- Get mouse movement to move the camera
             local mouseX = GetControlNormal(0, 1) -- INPUT_LOOK_LR
             local mouseY = GetControlNormal(0, 2) -- INPUT_LOOK_UD
-    
+
             -- Retrieve the current FOV
             local currentFov = GetCamFov(Cam.Cache[PHOTOMODE.CameraName])
-    
+
             -- Define a scaling factor based on the current FOV
             local scaleFactor = currentFov / 40.0 -- Adjust the divisor to control sensitivity
-    
+
             -- Adjust camera rotation based on mouse movement and scaling factor
             local camRot = GetCamRot(Cam.Cache[PHOTOMODE.CameraName], 2)
             camRot = vector3(camRot.x - mouseY * 5.0 * scaleFactor, camRot.y, camRot.z - mouseX * 5.0 * scaleFactor)
             Cam.SetRotation(PHOTOMODE.CameraName, camRot, 2)
-    
+
             Wait(1)
         end
         PHOTOMODE.IsActive = false
