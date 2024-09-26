@@ -1,5 +1,6 @@
 Config = {}
 
+Config.MaxDistanceFromPlayer = 20.0 -- Max distance from player to camera
 Config.ShowIconAbovePlayersInPhotomode = true
 Config.Positions = {
     vector4(0.0, 0.0, 0.0, 0.0),

@@ -112,6 +112,17 @@ function PHOTOMODE.Start()
                 PHOTOMODE.Cache.Moved = true
             end
 
+            if Config.MaxDistanceFromPlayer then
+                local pPos = GetEntityCoords(pPed)
+                local distance = #(camPos - pPos)
+                if distance > Config.MaxDistanceFromPlayer then
+                    local direction = camPos - pPos
+                    direction = direction / distance
+                    camPos = pPos + direction * Config.MaxDistanceFromPlayer
+                    DrawMarker(28, pPos.x, pPos.y, pPos.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.MaxDistanceFromPlayer, Config.MaxDistanceFromPlayer, Config.MaxDistanceFromPlayer, 255, 0, 0, 150, false, false, 2, false, nil, nil, false)
+                end
+            end
+
             Cam.SetPosition(PHOTOMODE.CameraName, camPos)
 
             if not IsDisabledControlPressed(0, 24) then
