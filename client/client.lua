@@ -295,6 +295,10 @@ if Config.ShowIconAbovePlayersInPhotomode then
 end
 
 RegisterNetEvent("photomode:SetPlayerInPhotomode", function(serverID)
+    local ownServerID = GetPlayerServerId(PlayerId())
+    if serverID == ownServerID then
+        return
+    end
     PHOTOMODE.PlayersInPhotomode[serverID] = true
 end)
 
