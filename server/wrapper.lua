@@ -204,6 +204,18 @@ function API.CanCarryItem(source, itemName, amount)
     return false
 end
 
+-- Get Player Group (for admin, moderator etc.)
+function API.GetPlayerGroup(source)
+    if API.Framework == 'ESX' then
+        local xPlayer = API.ESX.GetPlayerFromId(source)
+        return xPlayer.getGroup() -- Ex: 'user', 'admin', 'mod'
+    elseif API.Framework == 'QBCore' then
+        local xPlayer = API.QBCore.Functions.GetPlayer(source)
+        return xPlayer.PlayerData.group -- if QBCore use group
+    end
+    return 'user' -- Si aucune info, par défaut 'user'
+end
+
 -- QBCore Refresh logic (https://docs.qbcore.org/qbcore-documentation/qb-core/shared-exports)
 RegisterNetEvent('QBCore:Server:UpdateObject', function()
 	if source ~= '' then return false end
