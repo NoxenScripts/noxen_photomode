@@ -246,12 +246,6 @@ function PHOTOMODE.Stop()
     Cam.Destroy(PHOTOMODE.CameraName)
 end
 
--- Commands
-RegisterCommand("photomode", function()
-    -- Vérifier avec le serveur si le joueur a les droits d'activer le mode photo
-    TriggerServerEvent('photomode:checkPermission')
-end, false)
-
 -- Check permission
 RegisterNetEvent('photomode:toggleMode')
 AddEventHandler('photomode:toggleMode', function()
