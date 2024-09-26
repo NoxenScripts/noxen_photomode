@@ -9,12 +9,12 @@ function PHOTOMODE.Start()
     local gameplayCamFov = GetGameplayCamFov()
     PHOTOMODE.FOV = gameplayCamFov
 
-    print(gameplayCamPos)
     Cam.Create(PHOTOMODE.CameraName)
     Cam.SetPosition(PHOTOMODE.CameraName, gameplayCamPos)
     Cam.SetRotation(PHOTOMODE.CameraName, gameplayCamRot, 2)
     Cam.SetFov(PHOTOMODE.CameraName, gameplayCamFov)
     Cam.SetActive(PHOTOMODE.CameraName, true, false, 0)
+    SetTimeScale(0.0)
     
     PHOTOMODE.IsActive = true
     Citizen.CreateThread(function()
@@ -45,7 +45,10 @@ function PHOTOMODE.Start()
     
             if IsDisabledControlPressed(0, 24) then
                 local camPos = GetCamCoord(Cam.Cache[PHOTOMODE.CameraName])
-                camPos = vector3(camPos.x + mouseX * 0.1, camPos.y, camPos.z - mouseY * 0.1)
+                local camRot = GetCamRot(Cam.Cache[PHOTOMODE.CameraName], 2)
+                local forwardVector = RotationToDirection(camRot)
+                local rightVector = RotationToDirection(vector3(camRot.x, camRot.y, camRot.z + 90.0))
+                camPos = camPos + forwardVector * (-mouseY * 0.1) + rightVector * (mouseX * 0.1)
                 Cam.SetPosition(PHOTOMODE.CameraName, camPos)
             else
                 local camRot = GetCamRot(Cam.Cache[PHOTOMODE.CameraName], 2)
@@ -55,9 +58,18 @@ function PHOTOMODE.Start()
     
             Wait(1)
         end
+        SetTimeScale(1.0)
         PHOTOMODE.IsActive = false
     end)
 end
+
+function RotationToDirection(rotation)
+    local radZ = math.rad(rotation.z)
+    local radX = math.rad(rotation.x)
+    local num = math.abs(math.cos(radX))
+    return vector3(-math.sin(radZ) * num, math.cos(radZ) * num, math.sin(radX))
+end
+
 function PHOTOMODE.BlockMouvementsControls()
     if PHOTOMODE.IsActive then
         DisableControlAction(0, 30, true) -- INPUT_MOVE_LR

@@ -44,7 +44,7 @@ function Cam.HandleSmartDof(name, entity, dofValue)
     local distance = #(camPos - entityPos)
 
     -- Set DOF values based on distance
-    local nearDof = distance - 0.5 -- Slightly in front of the entity
+    local nearDof = distance - 5.9 -- Slightly in front of the entity
     local farDof = distance + 0.9 -- Slightly behind the entity
 
     SetUseHiDof() -- Enable high depth of field
