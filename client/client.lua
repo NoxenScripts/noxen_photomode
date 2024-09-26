@@ -238,5 +238,3 @@ RegisterCommand("photomode", function()
         PHOTOMODE.Stop()
     end
 end, false)
-
-PHOTOMODE.Start()
