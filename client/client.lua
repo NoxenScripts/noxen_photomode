@@ -11,12 +11,15 @@ PHOTOMODE.Settings = {
 }
 
 PHOTOMODE.Cache = {}
-PHOTOMODE.PlayersInPhotomode = {} -- Populate with server IDs
+PHOTOMODE.PlayersInPhotomode = {} -- TODO: Populate with server IDs
 
 function PHOTOMODE.Start()
     local gameplayCamPos = GetFinalRenderedCamCoord()
     local gameplayCamRot = GetGameplayCamRot(2)
     local gameplayCamFov = GetGameplayCamFov()
+    local baseX = 0.05
+    local baseY = 0.2
+    local actualX = 0.0
     PHOTOMODE.FOV = gameplayCamFov
     PHOTOMODE.Cache = {}
     PHOTOMODE.Cache.LastRot = gameplayCamRot
@@ -133,44 +136,48 @@ function PHOTOMODE.Start()
 
             if PHOTOMODE.Cache.IsUIActive or PHOTOMODE.Cache.UIAlpha > 0 then
                 if PHOTOMODE.Cache.IsUIActive then
+                    baseX = -0.05
+                    baseY = 0.2
                     PHOTOMODE.Cache.UIAlpha = math.min(PHOTOMODE.Cache.UIAlpha + 10, 255)
                 else
+                    baseX = -0.15
+                    baseY = 0.2
                     PHOTOMODE.Cache.UIAlpha = math.max(PHOTOMODE.Cache.UIAlpha - 10, 0)
                 end
+                actualX = UI.CalculateNextScalablePosition(baseX, actualX, 0.1)
 
                 UI.ShowMouseThisFrame(true)
 
-                local baseX = 0.05
-                local baseY = 0.2
-
                 local x, y = UI.ConvertToPixel(292, 440)
-                UI.DrawSimpleSprite("photomode_ui", "frame", baseX, baseY, x, y, 0, 255, 255, 255, PHOTOMODE.Cache.UIAlpha , {})
+                UI.DrawSimpleSprite("photomode_ui", "frame", actualX, baseY, x, y, 0, 255, 255, 255, PHOTOMODE.Cache.UIAlpha , {})
 
                 local x, y = UI.ConvertToPixel(15, 15)
 
                 baseY = baseY + 0.10
-                baseX = baseX + 0.01
+                actualX = actualX + 0.01
                 for k,v in pairs(PHOTOMODE.Settings) do
                     local type = type(v.value)
                     if type == "boolean" then
                         local sprite = "checkbox" .. (v.value and "_checked" or "")
-                        UI.DrawSpriteNew("photomode_ui", sprite, baseX, baseY, x, y, 0, 255, 255, 255, PHOTOMODE.Cache.UIAlpha , {}, function(isSelected)
+                        UI.DrawSpriteNew("photomode_ui", sprite, actualX, baseY, x, y, 0, 255, 255, 255, PHOTOMODE.Cache.UIAlpha , {}, function(isSelected)
                             if isSelected then
                                 PHOTOMODE.Settings[k].value = not PHOTOMODE.Settings[k].value
                             end
                         end)
-                        UI.DrawTexts(baseX + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, PHOTOMODE.Cache.UIAlpha }, 6, false, false, true, false)
+                        UI.DrawTexts(actualX + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, PHOTOMODE.Cache.UIAlpha }, 6, false, false, true, false)
                     elseif type == "number" then
-                        UI.DrawSlider(baseX, baseY, x + 0.05, y, {150, 150, 150, PHOTOMODE.Cache.UIAlpha - 200}, {250, 230, 10, PHOTOMODE.Cache.UIAlpha - 150}, v.value, v.maxValue, {direction = 1, noHover = false}, function(valueUpdated, newValue)
+                        UI.DrawSlider(actualX, baseY, x + 0.05, y, {150, 150, 150, PHOTOMODE.Cache.UIAlpha - 200}, {250, 230, 10, PHOTOMODE.Cache.UIAlpha - 150}, v.value, v.maxValue, {direction = 1, noHover = false}, function(valueUpdated, newValue)
                             if valueUpdated then
                                 PHOTOMODE.Settings[k].value = newValue
                             end
                         end)
-                        UI.DrawTexts(baseX + 0.05 + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, PHOTOMODE.Cache.UIAlpha }, 6, false, false, true, false)
+                        UI.DrawTexts(actualX + 0.05 + 0.013, baseY - 0.004, v.label, false, 0.30, {255, 255, 255, PHOTOMODE.Cache.UIAlpha }, 6, false, false, true, false)
                     end
 
                     baseY = baseY + y + 0.01
                 end
+
+                print(actualX, baseY)
             end
 
             Wait(1)
