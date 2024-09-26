@@ -11,7 +11,7 @@ PHOTOMODE.Settings = {
 }
 
 PHOTOMODE.Cache = {}
-PHOTOMODE.PlayersInPhotomode = {} -- TODO: Populate with server IDs
+PHOTOMODE.PlayersInPhotomode = {}
 
 function PHOTOMODE.Start()
     local gameplayCamPos = GetFinalRenderedCamCoord()
