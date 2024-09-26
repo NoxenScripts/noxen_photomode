@@ -842,20 +842,3 @@ function UI.CalculateCorrecteSizeForUI(ui_name, dict, sprite, maxX, maxY)
 
     return UI.CacheSize[ui_name][dict..sprite].size[1], UI.CacheSize[ui_name][dict..sprite].size[2], UI.CacheSize[ui_name][dict..sprite].resizeDone
 end
-
-
-ESX_HANDLER.Load(function()
-    for k,v in pairs(UI.fontToLoad) do
-        UI.LoadFont(v)
-        print(v[1], v[2], "Loaded.")
-    end
-end)
-
-exports('GetNativeDraw', function()
-    print("EasyCore: GetNativeDraw called")
-    return UI
-end)
-
-AddEventHandler('EasyCore:UI:Ready', function(cb)
-    cb(true)
-end)
