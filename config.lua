@@ -16,6 +16,8 @@ Config.AllowedGroups = {'admin', 'mod'}
 -- Notification configuration
 Config.NotificationType = 'esx' -- Can be 'esx', 'qb', or 'custom'.
 
+Config.CheckForUpdates = true -- Check for updates
+
 -- Function Triggered when a player enter photomode
 -- You can use this function to toggle off your HUD
 function Config.EnteredPhotomode()

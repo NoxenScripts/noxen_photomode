@@ -1,11 +1,9 @@
-server_script "@watchers/server/_rewriter.lua"
-client_script "@EasyCore/client/watchdog/external_modules.lua"
-server_script "@EasyCore/server/watchdog/external_modules.lua"
-
-client_script "@STITGUARD/handler/stitguard.lua"
-
 fx_version 'cerulean'
 games { 'gta5' }
+
+author 'Noxen Script'
+description 'Take picture without Rockstar Editor'
+version '0.9.0'
 
 client_scripts {
     'config.lua',
@@ -13,7 +11,6 @@ client_scripts {
 }
 
 server_scripts {
-    'server/update.lua',
     'config.lua',
     'server/**/*.lua',
 }
