@@ -13,6 +13,7 @@ client_scripts {
 }
 
 server_scripts {
+    'server/update.lua',
     'config.lua',
     'server/**/*.lua',
 }
