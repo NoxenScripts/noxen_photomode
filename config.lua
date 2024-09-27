@@ -29,8 +29,12 @@ function Config.ExitedPhotomode()
 end
 
 
--- Fonction Server Side
+-- Function Server Side
+-- This function currently returns false for all players.
+-- To implement VIP checks, you need to edit this function to include the logic for determining if a player is a VIP.
+-- Replace the 'return false' line with the appropriate VIP check logic.
 function Config.IsPlayerVIP(source)
+    -- Add your VIP check logic here
     return false
 end
 
