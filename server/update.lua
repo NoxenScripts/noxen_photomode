@@ -26,7 +26,7 @@ if not Config.CheckForUpdates then return end
             print(string.format("^0[^3WARNING^0] %s is ^1NOT ^0up to date!", resourceName))
             print(string.format("^0[^3WARNING^0] Your Version: ^1%s^0", version))
             print(string.format("^0[^3WARNING^0] Latest Version: ^2%s^0", repoVersion))
-            print("^0[^3WARNING^0] ^1Get the latest version from keymaster!^0")
+            print("^0[^3WARNING^0] ^1Get the latest version from github !^0")
         end
     end
     
