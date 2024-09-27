@@ -39,7 +39,7 @@ RegisterCommand("photomode", function(source, args, rawCommand)
 
     -- VIP status check (if enabled in config)
     if Config.CheckVIP then
-        local isVIP = API.IsPlayerVIP(source)
+        local isVIP = Config.IsPlayerVIP(source)
         if isVIP then
             hasPermission = true
         end
