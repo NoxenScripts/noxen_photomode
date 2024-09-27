@@ -9,6 +9,7 @@ end)
 -- Server-side command logging with integrated permissions check
 RegisterCommand("photomode", function(source, args, rawCommand)
     if source == 0 then
+        print("This command can only be executed by a player.")
         return
     end -- Checks if the command is executed by a player (source > 0)
 
