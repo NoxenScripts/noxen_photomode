@@ -14,14 +14,18 @@ if not Config.CheckForUpdates then return end
     local resource = 'noxen_photomode'
     local resourceName = GetCurrentResourceName() ~= resource and resource .. '(' .. GetCurrentResourceName() .. ')' or resource
     local version = GetResourceMetadata(GetCurrentResourceName(), 'version')
-    local repoLink = 'https://api.github.com/repos/Noxen-Versions/' .. resource .. '/releases/latest'
+    local rawLink = 'https://raw.githubusercontent.com/NoxenScripts/versioning/refs/heads/main/'..resource..'.json' 
     
-    -- Get the latest version from the repository
-    local function getRepoVersion(callback)
-        PerformHttpRequest(repoLink, function(err, response)
+    -- Get the latest version from the raw GitHub file
+    local function getRawVersion(callback)
+        PerformHttpRequest(rawLink, function(err, response)
             if err == 200 then
                 local data = json.decode(response)
-                callback(data.tag_name)
+                if data and data.version then
+                    callback(data.version)
+                else
+                    callback(nil)
+                end
             else
                 callback(nil)
             end
@@ -34,7 +38,9 @@ if not Config.CheckForUpdates then return end
             print(string.format("^0[^3WARNING^0] %s is ^1NOT ^0up to date!", resourceName))
             print(string.format("^0[^3WARNING^0] Your Version: ^1%s^0", version))
             print(string.format("^0[^3WARNING^0] Latest Version: ^2%s^0", repoVersion))
-            print("^0[^3WARNING^0] ^1Get the latest version from github !^0")
+            print("^0[^3WARNING^0] ^1Get the latest version from GitHub!^0")
+        else
+            print(string.format("^0[^2INFO^0] %s is up to date.", resourceName))
         end
     end
     
@@ -46,15 +52,16 @@ if not Config.CheckForUpdates then return end
         end
     
         while true do
-            getRepoVersion(function(repoVersion)
+            getRawVersion(function(repoVersion)
                 if repoVersion then
                     checkVersion(repoVersion)
                 else
-                    print("^0[^3ERROR^0] Failed to fetch the latest version information.")
+                    print("^0[^3ERROR^0] Failed to fetch the version from the GitHub raw file.")
                 end
             end)
     
             Wait(3600000) -- Check every hour
         end
     end)
+    
     
