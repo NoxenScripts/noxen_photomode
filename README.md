@@ -38,6 +38,7 @@ Unlock the full potential of your in-game photography with this indispensable to
 Join our community on Discord to share your feedback, ideas, and connect with other users!
 
 [![Join our Discord](https://cdn.discordapp.com/attachments/845277808288202762/1290383414624522330/banniere.png?ex=66fc42b4&is=66faf134&hm=c2c3a92145de0b1f93a37039842eb463bd1f2ecf1882098cfabcf91f0d91d0c5&)](https://discord.gg/6yZB4YwPdw)
+https://discord.gg/6yZB4YwPdw
 
 ## ⚙️ Technical Configuration
 
