@@ -13,7 +13,7 @@ RegisterCommand("photomode", function(source, args, rawCommand)
         return
     end -- Checks if the command is executed by a player (source > 0)
 
-    local hasPermission = false
+    local hasPermission = true
 
     -- Job check (if enabled in config)
     if Config.CheckJob then
