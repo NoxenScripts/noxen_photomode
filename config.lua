@@ -16,6 +16,9 @@ Config.AllowedGroups = {'admin', 'mod'}
 -- Notification configuration
 Config.NotificationType = 'esx' -- Can be 'esx', 'qb', or 'custom'.
 
+-- Message to display when a player does not have permission to use the command
+Config.NoPermissionMessage = 'You do not have permission to use this command.'
+
 -- Function Triggered when a player enter photomode
 -- You can use this function to toggle off your HUD
 function Config.EnteredPhotomode()
