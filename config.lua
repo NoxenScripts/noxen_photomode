@@ -3,8 +3,8 @@ Config = {}
 Config.MaxDistanceFromPlayer = 20.0 -- Max distance from player to camera
 Config.ShowIconAbovePlayersInPhotomode = true
 
-Config.CheckJob = true  -- Activate job check
-Config.CheckGroup = true  -- Activate user group check
+Config.CheckJob = false  -- Activate job check
+Config.CheckGroup = false  -- Activate user group check
 Config.CheckVIP = false  -- Activate VIP check
 
 -- List of jobs authorized to use photo mode (if CheckJob is enabled)
