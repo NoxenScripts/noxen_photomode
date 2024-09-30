@@ -293,7 +293,6 @@ if Config.ShowIconAbovePlayersInPhotomode then
                     HandlingUI = true
 
                     UI.DrawSimpleSprite("photomode_ui", "camera_icon", 0.5, 0.5, x, y, 0, 255, 255, 255, 255, {Draw3d = {pos = vector3(entityCoords.x, entityCoords.y, entityCoords.z + 1.0)}})
-                    print("Drawing icon", entityCoords, x, y)
                 end
             end
 
