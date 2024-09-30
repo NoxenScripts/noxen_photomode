@@ -39,4 +39,80 @@ Join our community on Discord to share your feedback, ideas, and connect with ot
 
 [![Join our Discord](https://cdn.discordapp.com/attachments/845277808288202762/1290383414624522330/banniere.png?ex=66fc42b4&is=66faf134&hm=c2c3a92145de0b1f93a37039842eb463bd1f2ecf1882098cfabcf91f0d91d0c5&)](https://discord.gg/6yZB4YwPdw)
 
+## ⚙️ Technical Configuration
+
+Below is the configuration file for the In-Game Photo Mode Tool. You can customize it to suit your server's needs:
+
+```lua
+Config = {}
+
+Config.MaxDistanceFromPlayer = 20.0 -- Max distance from player to camera
+Config.ShowIconAbovePlayersInPhotomode = true
+
+Config.CheckJob = true  -- Activate job check
+Config.CheckGroup = true  -- Activate user group check
+Config.CheckVIP = false  -- Activate VIP check
+
+-- List of jobs authorized to use photo mode (if CheckJob is enabled)
+Config.AllowedJobs = {'police', 'ambulance'}
+
+-- List of groups authorized to use photo mode (if CheckGroup is enabled)
+Config.AllowedGroups = {'admin', 'mod'}
+
+-- Notification configuration
+Config.NotificationType = 'esx' -- Can be 'esx', 'qb', or 'custom'.
+
+-- Function Triggered when a player enters photomode
+-- You can use this function to toggle off your HUD
+function Config.EnteredPhotomode()
+
+end
+
+-- Function Triggered when a player exits photomode
+-- You can use this function to toggle on your HUD
+function Config.ExitedPhotomode()
+
+end
+
+-- Function Server Side
+-- This function currently returns false for all players.
+-- To implement VIP checks, you need to edit this function to include the logic for determining if a player is a VIP.
+-- Replace the 'return false' line with the appropriate VIP check logic.
+function Config.IsPlayerVIP(source)
+    -- Add your VIP check logic here
+    return false
+end
+
+function Config.SendNotification(source, message)
+    if Config.NotificationType == 'esx' then
+        TriggerClientEvent('esx:showNotification', source, message)
+    elseif Config.NotificationType == 'qb' then
+        TriggerClientEvent('QBCore:Notify', source, message, 'error')
+    elseif Config.NotificationType == 'custom' then
+        -- If the user wants to use his own notification system
+        -- He can add a function here for his notifications
+        -- Example: TriggerClientEvent('custom_notify', source, message, 'error')
+    end
+end
+```
+
+### Key Configuration Options:
+- **MaxDistanceFromPlayer:** Maximum distance allowed between the player and the camera.
+- **ShowIconAbovePlayersInPhotomode:** Shows an icon above players in photomode for better visibility.
+- **CheckJob / CheckGroup / CheckVIP:** Enable or disable checks for jobs, groups, and VIP status.
+
+### Job and Group Authorization:
+- **AllowedJobs:** List of jobs that are authorized to use photo mode.
+- **AllowedGroups:** List of groups that are authorized to use photo mode.
+
+### Notifications:
+- **NotificationType:** Specify the type of notification system to use (`'esx'`, `'qb'`, or `'custom'`).
+
+### Custom Functions:
+- **EnteredPhotomode:** Use this function to customize actions (e.g., hiding the HUD) when a player enters photo mode.
+- **ExitedPhotomode:** Use this function to customize actions (e.g., showing the HUD) when a player exits photo mode.
+- **IsPlayerVIP:** Implement your custom logic to determine if a player is a VIP.
+
 ---
+
+Feel free to customize the config file as needed to adapt the tool to your server!
