@@ -30,6 +30,16 @@ With our tool, you gain access to advanced features that put you in complete con
 - **User-Friendly:**  
   Easy to use for both beginners and experienced content creators.
 
+### How to Use:
+- **Starting the Tool:**  
+  To activate the photo mode, simply type `/photomode` in the chat. This will start the tool and enable the photo mode functionality.
+  
+- **Stopping the Tool:**  
+  To exit the photo mode, type `/photomode` again. This will stop the tool and return you to regular gameplay.
+
+- **Accessing the Settings Menu:**  
+  While in photo mode, press **E** to bring up the settings menu, where you can adjust options like depth of field, slow motion, and more.
+
 ### 🎯 Community and Support:
 We're constantly evolving, and your feedback is invaluable! Join us on Discord to share your ideas and request new features. We're always listening and eager to improve the tool to fit your needs.
 
