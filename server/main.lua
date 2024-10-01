@@ -15,6 +15,11 @@ RegisterCommand("photomode", function(source, args, rawCommand)
 
     local hasPermission = false
 
+    -- Check if all config options are disabled
+    if not Config.CheckJob and not Config.CheckGroup and not Config.CheckVIP then
+        hasPermission = true
+    end
+
     -- Job check (if enabled in config)
     if Config.CheckJob then
         local jobName = API.GetPlayerJob(source)

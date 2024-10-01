@@ -3,8 +3,8 @@ Config = {}
 Config.MaxDistanceFromPlayer = 20.0 -- Max distance from player to camera
 Config.ShowIconAbovePlayersInPhotomode = true
 
-Config.CheckJob = true  -- Activate job check
-Config.CheckGroup = true  -- Activate user group check
+Config.CheckJob = false  -- Activate job check
+Config.CheckGroup = false  -- Activate user group check
 Config.CheckVIP = false  -- Activate VIP check
 
 -- List of jobs authorized to use photo mode (if CheckJob is enabled)
@@ -16,7 +16,8 @@ Config.AllowedGroups = {'admin', 'mod'}
 -- Notification configuration
 Config.NotificationType = 'esx' -- Can be 'esx', 'qb', or 'custom'.
 
-Config.CheckForUpdates = true -- Check for updates
+-- Message to display when a player does not have permission to use the command
+Config.NoPermissionMessage = 'You do not have permission to use this command.'
 
 -- Function Triggered when a player enter photomode
 -- You can use this function to toggle off your HUD
