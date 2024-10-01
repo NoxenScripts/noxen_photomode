@@ -16,6 +16,9 @@ Config.AllowedGroups = {'admin', 'mod'}
 -- Notification configuration
 Config.NotificationType = 'esx' -- Can be 'esx', 'qb', or 'custom'.
 
+-- Check for updates
+Config.CheckForUpdates = true -- Check for updates
+
 -- Message to display when a player does not have permission to use the command
 Config.NoPermissionMessage = 'You do not have permission to use this command.'
 
