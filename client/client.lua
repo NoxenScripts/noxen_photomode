@@ -8,6 +8,8 @@ PHOTOMODE.Settings = {
     UseSmartDof = {value = true, label = "Use depth of field"},
     NearDofValue = {value = 1.0, label = "Near DOF value", minValue = 0.0, maxValue = 30.0},
     FarDofValue = {value = 1.0, label = "Far DOF value", minValue = 0.0, maxValue = 30.0},
+    UseTimeControl = {value = false, label = "Use time control"},
+    TimeControl = {value = 1.0, label = "Time control", minValue = 0.0, maxValue = 23.0},
 }
 
 PHOTOMODE.Cache = {}
@@ -42,6 +44,9 @@ function PHOTOMODE.Start()
         TriggerServerEvent("photomode:SetPlayerInPhotomode")
     end
 
+    local currentHours = GetClockHours()
+    PHOTOMODE.Settings.TimeControl.value = currentHours
+
     PHOTOMODE.IsActive = true
     Citizen.CreateThread(function()
         while PHOTOMODE.IsActive do
@@ -56,6 +61,10 @@ function PHOTOMODE.Start()
                 SetTimeScale(0.0)
             else
                 SetTimeScale(1.0)
+            end
+
+            if PHOTOMODE.Settings.UseTimeControl.value then
+                NetworkOverrideClockTime(math.floor(PHOTOMODE.Settings.TimeControl.value), 0, 0)
             end
 
             if IsControlJustPressed(0, 241) then
