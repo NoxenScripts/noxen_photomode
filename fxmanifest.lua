@@ -3,7 +3,7 @@ games { 'gta5' }
 
 author 'Noxen Script'
 description 'Take picture without Rockstar Editor'
-version '1.0.2'
+version '1.0.3'
 
 client_scripts {
     'config.lua',

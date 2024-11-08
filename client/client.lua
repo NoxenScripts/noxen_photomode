@@ -10,6 +10,7 @@ PHOTOMODE.Settings = {
     FarDofValue = {value = 1.0, label = "Far DOF value", minValue = 0.0, maxValue = 30.0},
     UseTimeControl = {value = false, label = "Use time control"},
     TimeControl = {value = 1.0, label = "Time control", minValue = 0.0, maxValue = 23.0},
+    Rotation = {value = 0.0, label = "Rotation", minValue = 0, maxValue = 360},
 }
 
 PHOTOMODE.Cache = {}
@@ -47,7 +48,10 @@ function PHOTOMODE.Start()
     local currentHours = GetClockHours()
     PHOTOMODE.Settings.TimeControl.value = currentHours
 
+    PHOTOMODE.Settings.Rotation.value = gameplayCamRot.y
+
     PHOTOMODE.IsActive = true
+    local RotationValueToApply = gameplayCamRot.y
     Citizen.CreateThread(function()
         while PHOTOMODE.IsActive do
             PHOTOMODE.Cache.Moved = false
@@ -61,6 +65,19 @@ function PHOTOMODE.Start()
                 SetTimeScale(0.0)
             else
                 SetTimeScale(1.0)
+            end
+
+            RotationValueToApply = UI.CalculateNextScalablePosition(PHOTOMODE.Settings.Rotation.value, RotationValueToApply, 0.05)
+
+            -- Control rotation using keyboard arrows
+            if IsDisabledControlJustPressed(0, 174) then
+                PHOTOMODE.Settings.Rotation.value = PHOTOMODE.Settings.Rotation.value - 3.5
+                PHOTOMODE.Cache.Moved = true
+            end
+
+            if IsDisabledControlJustPressed(0, 175) then
+                PHOTOMODE.Settings.Rotation.value = PHOTOMODE.Settings.Rotation.value + 3.5
+                PHOTOMODE.Cache.Moved = true
             end
 
             if PHOTOMODE.Settings.UseTimeControl.value then
@@ -136,13 +153,11 @@ function PHOTOMODE.Start()
 
             if not IsDisabledControlPressed(0, 24) then
                 camRot = vector3(camRot.x - mouseY * 5.0 * scaleFactor, camRot.y, camRot.z - mouseX * 5.0 * scaleFactor)
-                Cam.SetRotation(PHOTOMODE.CameraName, camRot, 2)
-
-                if PHOTOMODE.Cache.LastRot ~= camRot then
-                    PHOTOMODE.Cache.Moved = true
-                    PHOTOMODE.Cache.LastRot = camRot
-                end
+                PHOTOMODE.Cache.Moved = true
             end
+
+            -- Combine the rotations into a single call
+            Cam.SetRotation(PHOTOMODE.CameraName, vector3(camRot.x, RotationValueToApply, camRot.z), 2)
 
             if PHOTOMODE.Cache.Moved then
                 PHOTOMODE.Cache.MenuAlpha = math.min(PHOTOMODE.Cache.MenuAlpha + 5, 255)
