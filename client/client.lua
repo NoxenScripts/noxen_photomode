@@ -150,8 +150,10 @@ function PHOTOMODE.Start()
                 PHOTOMODE.Cache.MenuAlpha = math.max(PHOTOMODE.Cache.MenuAlpha - 5, 0)
             end
 
-            if PHOTOMODE.Cache.MenuAlpha > 0 then
-                UI.DrawTexts(0.5, 0.9, "Press [E] to open the camera UI", true, 0.45, {255, 255, 255, PHOTOMODE.Cache.MenuAlpha}, 6, false, false, true, false)
+            if Config.HideCommandTip ~= nil and Config.HideCommandTip == false then
+                if PHOTOMODE.Cache.MenuAlpha > 0 then
+                    UI.DrawTexts(0.5, 0.9, "Press [E] to open the camera UI", true, 0.45, {255, 255, 255, PHOTOMODE.Cache.MenuAlpha}, 6, false, false, true, false)
+                end
             end
 
             if IsControlJustReleased(0, 38) then

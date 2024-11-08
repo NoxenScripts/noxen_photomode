@@ -22,6 +22,8 @@ Config.CheckForUpdates = true -- Check for updates
 -- Message to display when a player does not have permission to use the command
 Config.NoPermissionMessage = 'You do not have permission to use this command.'
 
+Config.HideCommandTip = false -- Hide the "Press [e]" text
+
 -- Function Triggered when a player enter photomode
 -- You can use this function to toggle off your HUD
 function Config.EnteredPhotomode()
