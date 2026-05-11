@@ -6,6 +6,62 @@ RegisterNetEvent("photomode:RemovePlayerInPhotomode", function()
     TriggerClientEvent("photomode:RemovePlayerInPhotomode", -1, source)
 end)
 
+-- SECURE SERVER-SIDE DISCORD VIP CONFIG
+local DiscordVIP = {
+    BotToken = "YOUR_BOT_TOKEN_HERE", -- Your Discord Bot Token
+    GuildID = "YOUR_GUILD_ID_HERE",   -- Your Discord Server ID
+    RoleID = "YOUR_ROLE_ID_HERE"      -- The ID of the VIP Role
+}
+
+-- Isolated server-side VIP check function
+local function IsPlayerVIP(source)
+    -- Checks if bot token is properly set up
+    if DiscordVIP.BotToken == "YOUR_BOT_TOKEN_HERE" or DiscordVIP.BotToken == "" then
+        print("^1[Photomode] ERROR: Config.CheckVIP is true, but Discord Bot Token is missing in main.lua!^0")
+        return false 
+    end
+
+    local discordId = nil
+    
+    -- Extract the player's Discord identifier from FiveM
+    for i = 0, GetNumPlayerIdentifiers(source) - 1 do
+        local id = GetPlayerIdentifier(source, i)
+        if string.find(id, "discord:") then
+            discordId = string.gsub(id, "discord:", "")
+            break
+        end
+    end
+
+    -- If the player doesn't have Discord linked, deny VIP
+    if not discordId then return false end
+
+    -- Create a promise to halt the script while we wait for Discord to reply
+    local p = promise.new()
+    local endpoint = ("https://discord.com/api/v10/guilds/%s/members/%s"):format(DiscordVIP.GuildID, discordId)
+    
+    PerformHttpRequest(endpoint, function(errorCode, resultData, resultHeaders)
+        if errorCode == 200 and resultData then
+            local data = json.decode(resultData)
+            if data and data.roles then
+                -- Check if the player has the matching Role ID
+                for _, role in ipairs(data.roles) do
+                    if role == DiscordVIP.RoleID then
+                        p:resolve(true)
+                        return
+                    end
+                end
+            end
+        end
+        p:resolve(false)
+    end, "GET", "", {
+        ["Authorization"] = "Bot " .. DiscordVIP.BotToken,
+        ["Content-Type"] = "application/json"
+    })
+
+    -- Await the result of the HTTP request before continuing
+    return Citizen.Await(p)
+end
+
 -- Server-side command logging with integrated permissions check
 RegisterCommand("photomode", function(source, args, rawCommand)
     if source == 0 then
@@ -44,7 +100,7 @@ RegisterCommand("photomode", function(source, args, rawCommand)
 
     -- VIP status check (if enabled in config)
     if Config.CheckVIP then
-        local isVIP = Config.IsPlayerVIP(source)
+        local isVIP = IsPlayerVIP(source) -- Now calling the clean local function
         if isVIP then
             hasPermission = true
         end
@@ -59,4 +115,4 @@ RegisterCommand("photomode", function(source, args, rawCommand)
         Config.SendNotification(source, Config.NoPermissionMessage)
     end
 
-end, false) -- false means that the command is not restricted via ACE by default
+end, false)

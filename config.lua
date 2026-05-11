@@ -36,15 +36,10 @@ function Config.ExitedPhotomode()
 
 end
 
+-- VIP CONFIGURATION
+-- VIP logic has been moved to server/main.lua for security
+-- You can configure the Discord role check framework at the very top of that file
 
--- Function Server Side
--- This function currently returns false for all players.
--- To implement VIP checks, you need to edit this function to include the logic for determining if a player is a VIP.
--- Replace the 'return false' line with the appropriate VIP check logic.
-function Config.IsPlayerVIP(source)
-    -- Add your VIP check logic here
-    return false
-end
 
 function Config.SendNotification(source, message)
     if Config.NotificationType == 'esx' then

@@ -232,6 +232,9 @@ function PHOTOMODE.Start()
         -- Show HUD and radar
         DisplayHud(true)
         DisplayRadar(true)
+        -- Clears any lingering focus state on the player ped to stop infinite blur
+        ClearFocus()
+            
         Config.ExitedPhotomode()
     end)
 end

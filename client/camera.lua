@@ -7,6 +7,10 @@ function Cam.Create(name)
 end
 
 function Cam.Destroy(name)
+    -- FIX: Reset DOF parameters before destroying the camera to prevent permanent blur
+    SetCamUseShallowDofMode(Cam.Cache[name], false)
+    SetCamDofStrength(Cam.Cache[name], 0.0)
+    
     Cam.SetActive(name, false, false, 0)
     DestroyCam(Cam.Cache[name], false)
     Cam.Cache[name] = nil
