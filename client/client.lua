@@ -260,10 +260,21 @@ function PHOTOMODE.BlockMouvementsControls()
         DisableControlAction(0, 33, true) -- INPUT_MOVE_DOWN_ONLY
         DisableControlAction(0, 34, true) -- INPUT_MOVE_LEFT_ONLY
         DisableControlAction(0, 35, true) -- INPUT_MOVE_RIGHT_ONLY
+        DisableControlAction(0, 36, true) -- INPUT_DUCK
+        DisableControlAction(0, 22, true) -- INPUT_JUMP
+        DisableControlAction(0, 21, true) -- INPUT_SPRINT
+        DisableControlAction(0, 8, true)  -- INPUT_VEH_MOVE_UP / climb ladder up
+        DisableControlAction(0, 23, true) -- INPUT_ENTER (enter vehicle)
+        DisableControlAction(0, 75, true) -- INPUT_VEH_EXIT
 
-        -- Also block attacks controls
+        -- Also block attacks/weapon controls
         DisableControlAction(0, 24, true) -- INPUT_ATTACK
         DisableControlAction(0, 25, true) -- INPUT_AIM
+        DisableControlAction(0, 37, true) -- INPUT_SELECT_WEAPON
+        DisableControlAction(0, 140, true) -- INPUT_MELEE_ATTACK_LIGHT
+        DisableControlAction(0, 141, true) -- INPUT_MELEE_ATTACK_HEAVY
+        DisableControlAction(0, 142, true) -- INPUT_MELEE_ATTACK_ALTERNATE
+        DisableControlAction(0, 143, true) -- INPUT_MELEE_BLOCK
     end
 end
 
