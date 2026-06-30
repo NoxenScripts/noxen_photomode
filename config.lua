@@ -27,13 +27,13 @@ Config.HideCommandTip = false -- Hide the "Press [e]" text
 -- Function Triggered when a player enter photomode
 -- You can use this function to toggle off your HUD
 function Config.EnteredPhotomode()
-
+    exports['jg-hud']:toggleHud(false)
 end
 
 -- Function Triggered when a player exit photomode
 -- You can use this function to toggle on your HUD
 function Config.ExitedPhotomode()
-
+    exports['jg-hud']:toggleHud(true)
 end
 
 
